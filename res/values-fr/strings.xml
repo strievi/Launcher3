@@ -155,9 +155,13 @@
     <string name="theme_title">Thème</string>
     <string name="theme_automatic">Automatique</string>
     <string name="theme_default">Défaut</string>
-    <string name="theme_light">Lumière</string>
-    <string name="theme_dark">Foncé</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
     <string name="theme_transparent">Transparent</string>
     <string name="pref_open_source_licenses_title">Licences Open Source</string>
     <string name="about_donate">Faire un don</string>
+    <string name="bridge_missing_title">Rootless Pixel Bridge</string>
+    <string name="bridge_missing_message">
+        Le connecteur pour Google Feed est introuvable ou doit être mis à jour.
+    </string>
 </resources>
