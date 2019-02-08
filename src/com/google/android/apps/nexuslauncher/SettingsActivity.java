@@ -25,10 +25,12 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.R;
 
 public class SettingsActivity extends com.android.launcher3.SettingsActivity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
     public final static String ICON_PACK_PREF = "pref_icon_pack";
+    public final static String APP_INFO_PREF = "app_info";
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
@@ -91,6 +93,12 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
             mIconPackPref.setOnPreferenceChangeListener(this);
 
             findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
+
+            Preference appInfoPref = findPreference(APP_INFO_PREF);
+            Uri packageUri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
+            Intent appInfoPrefIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            appInfoPrefIntent.setData(packageUri);
+            appInfoPref.setIntent(appInfoPrefIntent);
         }
 
         private String getDisplayGoogleTitle() {

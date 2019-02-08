@@ -118,9 +118,6 @@
             android:key="app_info"
             android:title="@string/app_info_drop_target_label"
             android:persistent="false">
-            <intent
-                android:action="android.settings.APPLICATION_DETAILS_SETTINGS"
-                android:data="package:amirz.rootless.nexuslauncher" />
         </Preference>
 
         <Preference
