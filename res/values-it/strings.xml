@@ -161,6 +161,6 @@
     <string name="pref_open_source_licenses_title">Licenze open source</string>
     <string name="about_donate">Donare</string>
     <string name="bridge_missing_message">
-        Il ponte per connettersi al Google Feed non è stato trovato o deve essere aggiornato.
+        Il ponte per connettersi al Google Discover non è stato trovato o deve essere aggiornato.
     </string>
 </resources>

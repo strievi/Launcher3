@@ -159,6 +159,6 @@
     <string name="pref_open_source_licenses_title">ใบอนุญาตโอเพนซอร์ส</string>
     <string name="about_donate">บริจาค</string>
     <string name="bridge_missing_message">
-        ตัวเชื่อมต่อ Google Feed ไม่ได้ถูกติดตั้งหรือต้องมีการอัพเดต
+        ตัวเชื่อมต่อ Google Discover ไม่ได้ถูกติดตั้งหรือต้องมีการอัพเดต
     </string>
 </resources>

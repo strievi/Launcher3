@@ -161,7 +161,7 @@
     <string name="pref_open_source_licenses_title">Açık kaynak lisansları</string>
     <string name="about_donate">Bağış Yap</string>
     <string name="bridge_missing_message">
-        Google Feed sayfasına bağlanmak için gerekli eklenti bulunamadı ya da güncellenmesi
+        Google Discover sayfasına bağlanmak için gerekli eklenti bulunamadı ya da güncellenmesi
         gerekmekte.
     </string>
 </resources>

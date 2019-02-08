@@ -158,6 +158,6 @@
     <string name="pref_open_source_licenses_title">Lisensi open source</string>
     <string name="about_donate">Menyumbangkan</string>
     <string name="bridge_missing_message">
-        Jembatan penghubung Google Feed tidak ditemukan, atau perlu diperbaharui.
+        Jembatan penghubung Google Discover tidak ditemukan, atau perlu diperbaharui.
     </string>
 </resources>

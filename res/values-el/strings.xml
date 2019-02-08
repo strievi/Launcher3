@@ -161,7 +161,7 @@
     <string name="pref_open_source_licenses_title">Άδειες λογισμικού ανοικτού κώδικα</string>
     <string name="about_donate">Δωρεά</string>
     <string name="bridge_missing_message">
-        Η εφαρμογή γέφυρας για να συνδεθείτε στο Google Feed δεν βρέθηκε
+        Η εφαρμογή γέφυρας για να συνδεθείτε στο Google Discover δεν βρέθηκε
         ή χρειάζεται αναβάθμιση.
     </string>
 </resources>

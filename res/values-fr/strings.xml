@@ -162,6 +162,6 @@
     <string name="about_donate">Faire un don</string>
     <string name="bridge_missing_title">Rootless Pixel Bridge</string>
     <string name="bridge_missing_message">
-        Le connecteur pour Google Feed est introuvable ou doit être mis à jour.
+        Le connecteur pour Google Discover est introuvable ou doit être mis à jour.
     </string>
 </resources>

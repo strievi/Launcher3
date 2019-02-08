@@ -362,7 +362,7 @@
     <string name="about_donate">Donate</string>
     <string name="bridge_missing_title">Rootless Pixel Bridge</string>
     <string name="bridge_missing_message">
-        The bridge to connect to the Google Feed could not be found,
+        The bridge to connect to Google Discover could not be found,
         or needs to be updated.
     </string>
 </resources>
