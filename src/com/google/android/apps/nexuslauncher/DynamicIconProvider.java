@@ -39,7 +39,7 @@ public class DynamicIconProvider extends IconProvider {
         mDateChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (!Utilities.ATLEAST_NOUGAT) {
+                if (!Utilities.ATLEAST_NOUGAT_MR1) {
                     int dateOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
                     if (dateOfMonth == mDateOfMonth) {
                         return;
@@ -60,7 +60,7 @@ public class DynamicIconProvider extends IconProvider {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_DATE_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
         intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-        if (!Utilities.ATLEAST_NOUGAT) {
+        if (!Utilities.ATLEAST_NOUGAT_MR1) {
             intentFilter.addAction(Intent.ACTION_TIME_TICK);
         }
         mContext.registerReceiver(mDateChangeReceiver, intentFilter, null, new Handler(LauncherModel.getWorkerLooper()));
