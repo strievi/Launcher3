@@ -77,6 +77,9 @@ public final class Utilities {
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
 
+    private static final Pattern sOtherPattern =
+            Pattern.compile("[\\p{C}]");
+
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
     private static final float[] sPoint = new float[2];
@@ -429,6 +432,18 @@ public final class Utilities {
         // Just strip any sequence of whitespace or java space characters from the beginning and end
         Matcher m = sTrimPattern.matcher(s);
         return m.replaceAll("$1");
+    }
+
+    /**
+     * Strip invisible control characters and unused code points from string.
+     * https://stackoverflow.com/questions/44034232/undocumented-java-regex-character-class-pc/44034552
+     */
+    public static String stripOther(String str) {
+        if (str == null) {
+            return null;
+        }
+        Matcher m = sOtherPattern.matcher(str);
+        return m.replaceAll("");
     }
 
     /**

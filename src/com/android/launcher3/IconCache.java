@@ -481,7 +481,7 @@ public class IconCache {
     }
 
     private void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
-        info.title = Utilities.trim(entry.title);
+        info.title = Utilities.stripOther(Utilities.trim(entry.title));
         info.contentDescription = entry.contentDescription;
         info.iconBitmap = entry.icon == null ? getDefaultIcon(info.user) : entry.icon;
         info.usingLowResIcon = entry.isLowResIcon;
