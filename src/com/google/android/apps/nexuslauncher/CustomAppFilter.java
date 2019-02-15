@@ -47,7 +47,7 @@ public class CustomAppFilter extends NexusAppFilter {
         while (hiddenApps.contains(comp)) {
             hiddenApps.remove(comp);
         }
-        if (hidden != CustomIconUtils.isPackProvider(context, key.componentName.getPackageName())) {
+        if (hidden) {
             hiddenApps.add(comp);
         }
         setHiddenApps(context, hiddenApps);
@@ -59,7 +59,7 @@ public class CustomAppFilter extends NexusAppFilter {
     }
 
     static boolean isHiddenApp(Context context, ComponentKey key) {
-        return getHiddenApps(context).contains(key.toString()) != CustomIconUtils.isPackProvider(context, key.componentName.getPackageName());
+        return getHiddenApps(context).contains(key.toString());
     }
 
     private static Set<String> getHiddenApps(Context context) {
