@@ -17,6 +17,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -89,9 +90,9 @@ public class CustomIconUtils {
                 UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(context);
                 LauncherModel model = LauncherAppState.getInstance(context).getModel();
 
-                boolean noPack = CustomIconUtils.getCurrentPack(context).isEmpty();
-                Utilities.getPrefs(context).edit().putBoolean(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, !noPack).apply();
-                if (noPack) {
+                boolean packAllowsHiding = FeatureFlags.ALWAYS_ALLOW_HIDING || !getCurrentPack(context).isEmpty();
+                Utilities.getPrefs(context).edit().putBoolean(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, packAllowsHiding).apply();
+                if (!packAllowsHiding) {
                     CustomAppFilter.resetAppFilter(context);
                 }
                 for (UserHandle user : userManagerCompat.getUserProfiles()) {
@@ -114,6 +115,17 @@ public class CustomIconUtils {
                 }
             }
         });
+    }
+
+    static void unhideAllApps(final Context context) {
+        UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(context);
+        LauncherModel model = LauncherAppState.getInstance(context).getModel();
+
+        CustomAppFilter.resetAppFilter(context);
+
+        for (UserHandle user : userManagerCompat.getUserProfiles()) {
+            model.onPackagesReload(user);
+        }
     }
 
     static void reloadIconByKey(Context context, ComponentKey key) {

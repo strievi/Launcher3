@@ -164,4 +164,7 @@
     <string name="bridge_missing_message">
         Le connecteur pour Google Discover est introuvable ou doit être mis à jour.
     </string>
+    <string name="title_reset_hidden_apps_prompt">Réinitialiser les applications masquées ?</string>
+    <string name="msg_reset_hidden_apps_prompt">"Toutes les applications masquées seront affichées à nouveau."</string>
+    <string name="label_reset_hidden_apps">RÉINITIALISER</string>
 </resources>

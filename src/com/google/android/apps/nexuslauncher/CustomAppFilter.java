@@ -10,6 +10,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.HashSet;
@@ -29,7 +30,7 @@ public class CustomAppFilter extends NexusAppFilter {
         if (componentName.getPackageName().equals(BuildConfig.APPLICATION_ID)) {
             return false;
         }
-        if (CustomIconUtils.usingValidPack(mContext)) {
+        if (FeatureFlags.ALWAYS_ALLOW_HIDING || CustomIconUtils.usingValidPack(mContext)) {
             return !isHiddenApp(mContext, new ComponentKey(componentName, user));
         }
         return super.shouldShowApp(componentName, user);

@@ -365,4 +365,7 @@
         The bridge to connect to Google Discover could not be found,
         or needs to be updated.
     </string>
+    <string name="title_reset_hidden_apps_prompt">Reset hidden apps?</string>
+    <string name="msg_reset_hidden_apps_prompt">"All the hidden apps will be shown again."</string>
+    <string name="label_reset_hidden_apps">RESET</string>
 </resources>

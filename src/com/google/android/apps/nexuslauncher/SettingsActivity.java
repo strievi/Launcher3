@@ -22,11 +22,18 @@ import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 
 public class SettingsActivity extends com.android.launcher3.SettingsActivity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
     public final static String ICON_PACK_PREF = "pref_icon_pack";
@@ -58,7 +65,7 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
     }
 
     public static class MySettingsFragment extends com.android.launcher3.SettingsActivity.LauncherSettingsFragment
-            implements Preference.OnPreferenceChangeListener {
+            implements Preference.OnPreferenceChangeListener, AdapterView.OnItemLongClickListener {
         private CustomIconPreference mIconPackPref;
         private Context mContext;
 
@@ -99,6 +106,18 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
             Intent appInfoPrefIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             appInfoPrefIntent.setData(packageUri);
             appInfoPref.setIntent(appInfoPrefIntent);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View result = super.onCreateView(inflater, container, savedInstanceState);
+            if (FeatureFlags.ALWAYS_ALLOW_HIDING && result != null) {
+                View lv = result.findViewById(android.R.id.list);
+                if (lv instanceof ListView) {
+                    ((ListView) lv).setOnItemLongClickListener(this);
+                }
+            }
+            return result;
         }
 
         private String getDisplayGoogleTitle() {
@@ -172,6 +191,27 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
             }
             return false;
         }
+
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+            ListView listView = (ListView) parent;
+            ListAdapter listAdapter = listView.getAdapter();
+            Object obj = listAdapter.getItem(pos);
+            if (obj != null && obj instanceof View.OnLongClickListener) {
+                View.OnLongClickListener longListener = (View.OnLongClickListener) obj;
+                return longListener.onLongClick(view);
+            } else {
+                Preference preference = (Preference) obj;
+                switch (preference.getKey()) {
+                    case ICON_PACK_PREF:
+                        SettingsActivity.ResetConfirmationFragment confirmationFragment = new SettingsActivity.ResetConfirmationFragment();
+                        confirmationFragment.setTargetFragment(this, 0);
+                        confirmationFragment.show(getFragmentManager(), preference.getKey());
+                        return true;
+                }
+            }
+            return false;
+        }
     }
 
     public static class OpenSourceLicensesFragment extends DialogFragment {
@@ -203,6 +243,21 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
                     .setMessage(R.string.msg_disable_suggestions_prompt)
                     .setNegativeButton(android.R.string.cancel, null)
                     .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
+        }
+    }
+
+    public static class ResetConfirmationFragment extends DialogFragment implements DialogInterface.OnClickListener {
+        public void onClick(final DialogInterface dialogInterface, final int n) {
+            Context context = getActivity();
+            CustomIconUtils.unhideAllApps(context);
+        }
+
+        public Dialog onCreateDialog(final Bundle bundle) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.title_reset_hidden_apps_prompt)
+                    .setMessage(R.string.msg_reset_hidden_apps_prompt)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(R.string.label_reset_hidden_apps, this).create();
         }
     }
 
