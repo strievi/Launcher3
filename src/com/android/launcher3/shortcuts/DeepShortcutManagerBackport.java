@@ -19,6 +19,7 @@ package com.android.launcher3.shortcuts;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
@@ -35,12 +36,14 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DeepShortcutManagerBackport {
+
     static Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
         return ((ShortcutInfoCompatBackport) shortcutInfo).getIcon(density);
     }
@@ -69,8 +72,13 @@ public class DeepShortcutManagerBackport {
 
         try {
             Resources resourcesForApplication = pm.getResourcesForApplication(packageName);
-            AssetManager assets = resourcesForApplication.getAssets();
-            XmlResourceParser parseXml = assets.openXmlResourceParser("AndroidManifest.xml");
+            ApplicationInfo ai = pm.getApplicationInfo(packageName, 0);
+
+            Class assetManagerClass = Class.forName("android.content.res.AssetManager");
+            AssetManager assetManager = (AssetManager) assetManagerClass.newInstance();
+            Method addAssetPath = assetManager.getClass().getMethod("addAssetPath", String.class);
+            int cookie = (Integer) addAssetPath.invoke(assetManager, ai.sourceDir);
+            XmlResourceParser parseXml = assetManager.openXmlResourceParser(cookie, "AndroidManifest.xml");
 
             int eventType;
             while ((eventType = parseXml.nextToken()) != XmlPullParser.END_DOCUMENT) {

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -30,6 +31,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -124,10 +126,16 @@ public class CustomIconProvider extends DynamicIconProvider {
         Map<String, String> elementTags = new HashMap<>();
 
         try {
-            Resources resourcesForApplication = mContext.getPackageManager().getResourcesForApplication(component.getPackageName());
-            AssetManager assets = resourcesForApplication.getAssets();
+            PackageManager pm = mContext.getPackageManager();
+            Resources resourcesForApplication = pm.getResourcesForApplication(component.getPackageName());
+            ApplicationInfo ai = pm.getApplicationInfo(component.getPackageName(), 0);
 
-            XmlResourceParser parseXml = assets.openXmlResourceParser("AndroidManifest.xml");
+            Class assetManagerClass = Class.forName("android.content.res.AssetManager");
+            AssetManager assetManager = (AssetManager) assetManagerClass.newInstance();
+            Method addAssetPath = assetManager.getClass().getMethod("addAssetPath", String.class);
+            int cookie = (Integer) addAssetPath.invoke(assetManager, ai.sourceDir);
+            XmlResourceParser parseXml = assetManager.openXmlResourceParser(cookie, "AndroidManifest.xml");
+
             while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
                 if (parseXml.getEventType() == XmlPullParser.START_TAG) {
                     String name = parseXml.getName();
