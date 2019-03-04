@@ -291,7 +291,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         R.layout.all_apps_icon, parent, false);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
-                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
