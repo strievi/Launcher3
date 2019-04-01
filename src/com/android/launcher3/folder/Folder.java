@@ -281,6 +281,10 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     public boolean startDrag(View v, DragOptions options) {
         Object tag = v.getTag();
+
+        // Make sure we won't interfere with long press callbacks
+        v.cancelLongPress();
+
         if (tag instanceof ShortcutInfo) {
             ShortcutInfo item = (ShortcutInfo) tag;
 
