@@ -695,22 +695,7 @@ public class Launcher extends BaseActivity
             }
         };
 
-        if (requestCode == REQUEST_BIND_APPWIDGET) {
-            // This is called only if the user did not previously have permissions to bind widgets
-            final int appWidgetId = data != null ?
-                    data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
-            if (resultCode == RESULT_CANCELED) {
-                completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId, requestArgs);
-                mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
-            } else if (resultCode == RESULT_OK) {
-                addAppWidgetImpl(
-                        appWidgetId, requestArgs, null,
-                        requestArgs.getWidgetHandler(),
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY);
-            }
-            return;
-        } else if (requestCode == REQUEST_PICK_WALLPAPER) {
+       if (requestCode == REQUEST_PICK_WALLPAPER) {
             if (resultCode == RESULT_OK && mWorkspace.isInOverviewMode()) {
                 // User could have free-scrolled between pages before picking a wallpaper; make sure
                 // we move to the closest one now.
@@ -721,7 +706,8 @@ public class Launcher extends BaseActivity
         }
 
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
-                requestCode == REQUEST_CREATE_APPWIDGET);
+                requestCode == REQUEST_CREATE_APPWIDGET ||
+                requestCode == REQUEST_BIND_APPWIDGET);
 
         // We have special handling for widgets
         if (isWidgetDrop) {
@@ -735,19 +721,27 @@ public class Launcher extends BaseActivity
             }
 
             final int result;
+            if (requestCode == REQUEST_BIND_APPWIDGET) {
+                // This is called only if the user did not previously have permissions to bind widgets
+                if (resultCode == RESULT_CANCELED) {
+                    completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId, requestArgs);
+                    mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
+                            ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                } else if (resultCode == RESULT_OK) {
+                    addAppWidgetImpl(
+                            appWidgetId, requestArgs, null,
+                            requestArgs.getWidgetHandler(),
+                            ON_ACTIVITY_RESULT_ANIMATION_DELAY);
+                }
+                return;
+            }
             if (appWidgetId < 0 || resultCode == RESULT_CANCELED) {
                 Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not " +
                         "returned from the widget configuration activity.");
                 result = RESULT_CANCELED;
                 completeTwoStageWidgetDrop(result, appWidgetId, requestArgs);
-                final Runnable onComplete = new Runnable() {
-                    @Override
-                    public void run() {
-                        exitSpringLoadedDragModeDelayed(false, 0, null);
-                    }
-                };
 
-                mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
+                mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             } else {
                 if (requestArgs.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
