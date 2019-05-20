@@ -216,7 +216,9 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mSwipeDetector.finishedScrolling();
-                    onCloseComplete();
+                    if (!mLauncher.getDragController().isDragging()) {
+                        onCloseComplete();
+                    }
                 }
             });
             mOpenCloseAnimator.setInterpolator(mSwipeDetector.isIdleState()
@@ -224,12 +226,15 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             mOpenCloseAnimator.start();
         } else {
             setTranslationY(mTranslationYClosed);
-            onCloseComplete();
+            if (!mLauncher.getDragController().isDragging()) {
+                onCloseComplete();
+            }
         }
     }
 
     private void onCloseComplete() {
         mIsOpen = false;
+        mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(mGradientBackground);
         mLauncher.getDragLayer().removeView(WidgetsBottomSheet.this);
         mLauncher.getSystemUiController().updateUiState(
@@ -335,5 +340,6 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
 
     @Override
     public void onDragEnd() {
+        onCloseComplete();
     }
 }
