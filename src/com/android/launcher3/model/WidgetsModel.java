@@ -109,18 +109,7 @@ public class WidgetsModel {
                 }
             }
             if (packageItem != null) {
-                // We want to preserve the user that was on the packageItem previously,
-                // so add it to tmpPackageItemInfos here to avoid creating a new entry.
-                tmpPackageItemInfos.put(packageItem.packageName, packageItem);
-
-                Iterator<WidgetItem> widgetItemIterator = mWidgetsList.get(packageItem).iterator();
-                while (widgetItemIterator.hasNext()) {
-                    WidgetItem nextWidget = widgetItemIterator.next();
-                    if (nextWidget.componentName.getPackageName().equals(packageUser.mPackageName)
-                            && nextWidget.user.equals(packageUser.mUser)) {
-                        widgetItemIterator.remove();
-                    }
-                }
+                mWidgetsList.remove(packageItem);
             }
         }
 
