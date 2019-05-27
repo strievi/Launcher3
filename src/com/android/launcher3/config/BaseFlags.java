@@ -69,4 +69,7 @@ abstract class BaseFlags {
 
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
+
+    // Allow hiding apps when using system default icons.
+    public static final boolean ALWAYS_ALLOW_HIDING = true;
 }
