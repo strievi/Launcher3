@@ -30,10 +30,13 @@ public class CustomAppFilter extends NexusAppFilter {
         if (componentName.getPackageName().equals(BuildConfig.APPLICATION_ID)) {
             return false;
         }
+        if (!super.shouldShowApp(componentName, user)) {
+            return false;
+        }
         if (FeatureFlags.ALWAYS_ALLOW_HIDING || CustomIconUtils.usingValidPack(mContext)) {
             return !isHiddenApp(mContext, new ComponentKey(componentName, user));
         }
-        return super.shouldShowApp(componentName, user);
+        return true;
     }
 
     static void resetAppFilter(Context context) {
