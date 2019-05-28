@@ -27,6 +27,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
@@ -40,7 +41,6 @@ import java.util.regex.Pattern;
  */
 public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
-    public final static String SEARCH_HIDDEN_APPS = "pref_search_hidden_apps";
     private final static Pattern complementaryGlyphs = Pattern.compile("\\p{M}");
     private final Context mContext;
     private final List<AppInfo> mApps;
@@ -87,7 +87,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     }
 
     public static List<AppInfo> getApps(Context context, List<AppInfo> defaultApps) {
-        if (!Utilities.getPrefs(context).getBoolean(SEARCH_HIDDEN_APPS, false)) {
+        if (!FeatureFlags.SEARCH_HIDDEN_APPS) {
             return defaultApps;
         }
         final List<AppInfo> apps = new ArrayList<>();

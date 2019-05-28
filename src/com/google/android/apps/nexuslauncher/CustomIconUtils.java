@@ -91,7 +91,6 @@ public class CustomIconUtils {
                 LauncherModel model = LauncherAppState.getInstance(context).getModel();
 
                 boolean packAllowsHiding = FeatureFlags.ALWAYS_ALLOW_HIDING || !getCurrentPack(context).isEmpty();
-                Utilities.getPrefs(context).edit().putBoolean(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, packAllowsHiding).apply();
                 if (!packAllowsHiding) {
                     CustomAppFilter.resetAppFilter(context);
                 }

@@ -72,4 +72,6 @@ abstract class BaseFlags {
 
     // Allow hiding apps when using system default icons.
     public static final boolean ALWAYS_ALLOW_HIDING = true;
+    // Include hidden apps in search results.
+    public static final boolean SEARCH_HIDDEN_APPS = true;
 }
