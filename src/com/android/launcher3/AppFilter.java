@@ -13,4 +13,8 @@ public class AppFilter {
     public boolean shouldShowApp(ComponentName app, UserHandle user) {
         return true;
     }
+
+    public boolean isBlacklistedApp(ComponentName app, UserHandle user) {
+        return false;
+    }
 }

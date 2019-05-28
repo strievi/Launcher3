@@ -27,16 +27,19 @@ public class CustomAppFilter extends NexusAppFilter {
 
     @Override
     public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
-        if (componentName.getPackageName().equals(BuildConfig.APPLICATION_ID)) {
-            return false;
-        }
-        if (!super.shouldShowApp(componentName, user)) {
+        if (isBlacklistedApp(componentName, user)) {
             return false;
         }
         if (FeatureFlags.ALWAYS_ALLOW_HIDING || CustomIconUtils.usingValidPack(mContext)) {
             return !isHiddenApp(mContext, new ComponentKey(componentName, user));
         }
         return true;
+    }
+
+    @Override
+    public boolean isBlacklistedApp(ComponentName componentName, UserHandle user) {
+        return (super.isBlacklistedApp(componentName, user)
+                || componentName.getPackageName().equals(BuildConfig.APPLICATION_ID));
     }
 
     static void resetAppFilter(Context context) {

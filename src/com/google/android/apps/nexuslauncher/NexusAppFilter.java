@@ -24,6 +24,11 @@ public class NexusAppFilter extends AppFilter {
 
     @Override
     public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
-        return !mHideList.contains(componentName);
+        return !isBlacklistedApp(componentName, user);
+    }
+
+    @Override
+    public boolean isBlacklistedApp(ComponentName componentName, UserHandle user) {
+        return mHideList.contains(componentName);
     }
 }

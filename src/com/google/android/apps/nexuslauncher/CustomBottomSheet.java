@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.util.ComponentKey;
@@ -75,10 +76,13 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         private ComponentKey mKey;
 
+        private LauncherAppState mLauncherAppState;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.app_edit_prefs);
+            mLauncherAppState = LauncherAppState.getInstance(getActivity());
         }
 
         public void loadForApp(ItemInfo itemInfo) {
@@ -103,7 +107,13 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 }
             }
 
-            mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
+            boolean blacklisted = mLauncherAppState.getAppFilter().isBlacklistedApp(itemInfo.getTargetComponent(), itemInfo.user);
+            if (blacklisted) {
+                mPrefHide.setChecked(true);
+                mPrefHide.setEnabled(false);
+            } else {
+                mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
+            }
 
             mPrefPack.setOnPreferenceChangeListener(this);
             mPrefHide.setOnPreferenceChangeListener(this);
