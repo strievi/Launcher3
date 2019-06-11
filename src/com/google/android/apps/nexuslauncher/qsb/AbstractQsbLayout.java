@@ -14,10 +14,12 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.Image;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.LauncherLayoutChangeListener;
@@ -174,7 +176,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
 
     public void onClick(View view) {
         if (view == mMicIconView) {
-            fallbackSearch("android.intent.action.VOICE_ASSIST");
+            fallbackSearch(Utilities.getDevicePrefs(getContext()).getBoolean("opa_enabled", true)
+                    ? Intent.ACTION_VOICE_COMMAND
+                    : "android.intent.action.VOICE_ASSIST");
         }
     }
 
@@ -198,7 +202,13 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     }
 
     private void loadPreferences(SharedPreferences sharedPreferences) {
-        mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.GONE : View.VISIBLE);
+        boolean opa = sharedPreferences.getBoolean("opa_enabled", true);
+        Intent opaIntent = new Intent(Intent.ACTION_VOICE_COMMAND).setPackage(GOOGLE_QSB);
+        mMicIconView.setVisibility(opa && getContext().getPackageManager()
+                .queryIntentActivities(opaIntent, 0).isEmpty() ? View.GONE : View.VISIBLE);
+
+        ((ImageView) mMicIconView).setImageResource(
+                opa ? R.drawable.ic_poodle_color : R.drawable.ic_mic_color);
         requestLayout();
     }
 }
