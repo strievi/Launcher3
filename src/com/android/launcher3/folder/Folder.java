@@ -818,6 +818,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         if (getItemCount() <= 1) {
             if (!mDragInProgress && !mSuppressFolderDeletion) {
                 replaceFolderWithFinalItem();
+                mDeleteFolderOnDropCompleted = false;
             } else if (mDragInProgress) {
                 mDeleteFolderOnDropCompleted = true;
             }
@@ -996,11 +997,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         boolean successfulDrop =
                 success && (!beingCalledAfterUninstall || mUninstallSuccessful);
 
-        if (successfulDrop) {
-            if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon && target != this) {
-                replaceFolderWithFinalItem();
-            }
-        } else {
+        if (!successfulDrop) {
             // The drag failed, we need to return the item to the folder
             ShortcutInfo info = (ShortcutInfo) d.dragInfo;
             View icon = (mCurrentDragView != null && mCurrentDragView.getTag() == info)
@@ -1024,6 +1021,12 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 mScrollPauseAlarm.cancelAlarm();
             }
             completeDragExit();
+        }
+
+        if (successfulDrop) {
+            if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon && target != this) {
+                replaceFolderWithFinalItem();
+            }
         }
 
         mDeleteFolderOnDropCompleted = false;
