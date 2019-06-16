@@ -73,6 +73,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     private Rect mInsets;
     private SwipeDetector mSwipeDetector;
     private GradientView mGradientBackground;
+    private boolean mDeferViewRemoval;
+    private boolean mCloseComplete;
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -90,6 +92,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
         mGradientBackground = (GradientView) mLauncher.getLayoutInflater().inflate(
                 R.layout.gradient_bg, mLauncher.getDragLayer(), false);
+        mDeferViewRemoval = false;
+        mCloseComplete = false;
     }
 
     @Override
@@ -216,8 +220,11 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mSwipeDetector.finishedScrolling();
-                    if (!mLauncher.getDragController().isDragging()) {
-                        onCloseComplete();
+                    close();
+                    if (!mDeferViewRemoval && !mCloseComplete) {
+                        closeComplete();
+                    } else {
+                        setVisibility(INVISIBLE);
                     }
                 }
             });
@@ -226,19 +233,26 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             mOpenCloseAnimator.start();
         } else {
             setTranslationY(mTranslationYClosed);
-            if (!mLauncher.getDragController().isDragging()) {
-                onCloseComplete();
+            close();
+            if (!mDeferViewRemoval && !mCloseComplete) {
+                closeComplete();
+            } else {
+                setVisibility(INVISIBLE);
             }
         }
     }
 
-    private void onCloseComplete() {
+    protected void close() {
         mIsOpen = false;
-        mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(mGradientBackground);
-        mLauncher.getDragLayer().removeView(WidgetsBottomSheet.this);
         mLauncher.getSystemUiController().updateUiState(
                 SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
+    }
+
+    protected void closeComplete() {
+        mLauncher.getDragController().removeDragListener(this);
+        mLauncher.getDragLayer().removeView(WidgetsBottomSheet.this);
+        mCloseComplete = true;
     }
 
     @Override
@@ -335,11 +349,15 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         // A widget or custom shortcut was dragged.
+        // Hide the view, but don't remove it yet because that interferes with touch events.
+        mDeferViewRemoval = true;
         close(true);
     }
 
     @Override
     public void onDragEnd() {
-        onCloseComplete();
+        if (mDeferViewRemoval && !mCloseComplete) {
+            closeComplete();
+        }
     }
 }
