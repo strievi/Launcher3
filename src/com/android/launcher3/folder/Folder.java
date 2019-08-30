@@ -166,7 +166,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             })
     @Thunk int mState = STATE_NONE;
     @ViewDebug.ExportedProperty(category = "launcher")
-    private boolean mRearrangeOnClose = false;
     boolean mItemsInvalidated = false;
     private View mCurrentDragView;
     private boolean mIsExternalDrag;
@@ -622,6 +621,11 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         // dropping. One resulting issue is that replaceFolderWithFinalItem() can be called twice.
         mDeleteFolderOnDropCompleted = false;
 
+        if (!mDragInProgress) {
+            // Make sure extra space is removed.
+            rearrangeChildren();
+        }
+
         final Runnable onCompleteRunnable;
         centerAboutIcon();
 
@@ -811,10 +815,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             }
         }
 
-        if (mRearrangeOnClose || mFolderIcon.onHotseat()) {
-            rearrangeChildren();
-            mRearrangeOnClose = false;
-        }
         if (getItemCount() <= 1) {
             if (!mDragInProgress && !mSuppressFolderDeletion) {
                 replaceFolderWithFinalItem();
@@ -937,11 +937,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     public void completeDragExit() {
         if (mIsOpen) {
             close(true);
-            mRearrangeOnClose = true;
-        } else if (mState == STATE_ANIMATING) {
-            mRearrangeOnClose = true;
         } else {
-            rearrangeChildren();
             clearDragInfo();
         }
     }
@@ -1377,7 +1373,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             mLauncher.addPendingItem(pasi, pasi.container, pasi.screenId, null, pasi.spanX,
                     pasi.spanY);
             d.deferDragViewCleanupPostAnimation = false;
-            mRearrangeOnClose = true;
         } else {
             final ShortcutInfo si;
             if (pasiSi != null) {
@@ -1427,7 +1422,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             }
 
             mItemsInvalidated = true;
-            rearrangeChildren();
 
             // Temporarily suppress the listener, as we did all the work already here.
             try (SuppressInfoChanges s = new SuppressInfoChanges()) {
@@ -1476,11 +1470,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mItemsInvalidated = true;
         View v = getViewForInfo(item);
         mContent.removeItem(v);
-        if (mState == STATE_ANIMATING) {
-            mRearrangeOnClose = true;
-        } else {
-            rearrangeChildren();
-        }
         if (getItemCount() <= 1) {
             if (mIsOpen) {
                 close(true);
