@@ -11,6 +11,15 @@ buildscript {
     }
 }
 
+def getVersionName = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--tags', '--dirty'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
@@ -21,7 +30,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 30911
-        versionName "3.9.1"
+        versionName getVersionName()
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
