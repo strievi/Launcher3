@@ -115,13 +115,16 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
         if (normalize) {
             title = normalize(title);
-            query = normalize(query);
+            query = normalize(query).trim();
         }
+
 
         int queryLength = query.length();
         int titleLength = title.length();
 
-        if (titleLength < queryLength || queryLength <= 0) {
+        if (queryLength == 0) {
+            return true;
+        } else if (titleLength < queryLength || queryLength < 0) {
             return false;
         }
 
