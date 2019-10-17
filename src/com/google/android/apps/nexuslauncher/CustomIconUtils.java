@@ -116,17 +116,6 @@ public class CustomIconUtils {
         });
     }
 
-    static void unhideAllApps(final Context context) {
-        UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(context);
-        LauncherModel model = LauncherAppState.getInstance(context).getModel();
-
-        CustomAppFilter.resetAppFilter(context);
-
-        for (UserHandle user : userManagerCompat.getUserProfiles()) {
-            model.onPackagesReload(user);
-        }
-    }
-
     static void reloadIconByKey(Context context, ComponentKey key) {
         LauncherModel model = LauncherAppState.getInstance(context).getModel();
         DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
