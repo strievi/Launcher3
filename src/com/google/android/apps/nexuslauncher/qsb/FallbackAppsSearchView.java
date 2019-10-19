@@ -63,8 +63,9 @@ public class FallbackAppsSearchView extends ExtendedEditText implements AllAppsS
 
     public void onSearchResult(final String lastSearchQuery, final ArrayList orderedFilter) {
         if (orderedFilter != null && getParent() != null) {
-            mApps.setOrderedFilter(orderedFilter);
-            notifyResultChanged();
+            if (mApps.setOrderedFilter(orderedFilter)) {
+                notifyResultChanged();
+            }
             mAdapter.setLastSearchQuery(lastSearchQuery);
         }
     }

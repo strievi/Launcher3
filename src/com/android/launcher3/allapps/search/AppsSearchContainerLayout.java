@@ -180,8 +180,9 @@ public class AppsSearchContainerLayout extends FrameLayout
     @Override
     public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
         if (apps != null) {
-            mApps.setOrderedFilter(apps);
-            notifyResultChanged();
+            if (mApps.setOrderedFilter(apps)) {
+                notifyResultChanged();
+            }
             mAdapter.setLastSearchQuery(query);
         }
     }
